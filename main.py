@@ -4,11 +4,18 @@ import hashlib
 import os
 import requests
 import json
+import jwt
+import time
+from cryptography.hazmat.primitives import serialization
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 
-GITHUB_APP_SECRET="ca0d4f4ba98f15b7e234df0d55882ca7390e321e"
-GITHUB_APP_TOKEN=""
+GITHUB_APP_SECRET=os.getenv('GITHUB_APP_SECRET')
+APP_ID = os.getenv('APP_ID')
+private_key_path = os.path.join(os.path.dirname(__file__), "jatase.2023-08-19.private-key.pem")
 
 # Secret key for validating webhook payloads
 SECRET = os.environ.get(GITHUB_APP_SECRET)
@@ -41,13 +48,15 @@ def webhook():
         comment = data["comment"]
 
         # import ipdb; ipdb.set_trace()
-        if "body" in comment and "tag" in comment:
+        if "body" in comment:  # and "tag" in comment:
             body = comment["body"]
-            tag = comment["tag"]
+            # tag = comment["tag"]
 
             if "@jatase" in body:
-                reply_text = f"Thanks for tagging me, @{comment['author']['login']}! 🤖"
-                reply_to_comment(discussion["url"], reply_text)
+                # reply_text = f"Thanks for tagging me, @{comment['author']['login']}! 🤖"
+                reply_text = f"Thanks for tagging me! 🤖"
+                import ipdb; ipdb.set_trace()
+                reply_to_comment(discussion['repository_url'] + "/discussions", reply_text)
 
     return "OK", 200
 
@@ -56,17 +65,35 @@ def is_valid_signature(payload, signature):
     return hmac.compare_digest("sha1=" + calculated_signature, signature)
 
 def reply_to_comment(discussion_url, reply_text):
+    token = create_token()
     headers = {
-        "Authorization": f"Bearer {os.environ.get(GITHUB_APP_TOKEN)}"
+        "Authorization": f"Bearer {token}"
     }
     data = {
         "body": reply_text
     }
+
     response = requests.post(discussion_url + "/comments", json=data, headers=headers)
     if response.status_code == 201:
         print("Reply posted successfully")
     else:
         print("Failed to post reply:", response.text)
+
+
+def create_token():
+    current_time = int(time.time())
+    payload = {
+        "iat": current_time,
+        "exp": current_time + 600,  # 10 minutes (maximum validity)
+        "iss": APP_ID
+    }
+
+    with open(private_key_path, "rb") as key_file:
+        private_key_data = key_file.read()
+        private_key = serialization.load_pem_private_key(private_key_data, password=None)
+        token = jwt.encode(payload, private_key, algorithm="RS256")
+
+    return token
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=9001, debug=True)
