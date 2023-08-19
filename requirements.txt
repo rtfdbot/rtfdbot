@@ -3,3 +3,4 @@ requests
 PyJWT
 cryptography
 python-dotenv
+llama-index
