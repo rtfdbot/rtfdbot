@@ -11,6 +11,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
+
+from getResponse import query
+
 app = Flask(__name__)
 
 GITHUB_APP_SECRET=os.getenv('GITHUB_APP_SECRET')
@@ -54,8 +58,11 @@ def webhook():
 
             if "@jatase" in body:
                 # reply_text = f"Thanks for tagging me, @{comment['author']['login']}! 🤖"
-                reply_text = f"Thanks for tagging me! 🤖"
-                import ipdb; ipdb.set_trace()
+                
+                body = body.replace("@jatase", "")
+                reply_text = f"Thanks for tagging me! 🤖 {query(body)}"
+                print(reply_text)
+                #import ipdb; ipdb.set_trace()
                 reply_to_comment(discussion['repository_url'] + "/discussions", reply_text)
 
     return "OK", 200

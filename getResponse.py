@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 load_dotenv()
 from llama_index import StorageContext, load_index_from_storage
 
-def getResponse(prompt):
+def query(prompt):
     storage_context = StorageContext.from_defaults(persist_dir="index")
 
     index = load_index_from_storage(storage_context)
@@ -11,8 +11,8 @@ def getResponse(prompt):
     return response
 
 def main():
-    prompt = "What is the API called for opening space ship doors?"
-    result = getResponse(prompt)
+    prompt = "How do we unlock the doors?"
+    result = query(prompt)
     print(result)
 
 if __name__ == "__main__":
