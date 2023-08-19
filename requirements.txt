@@ -4,3 +4,5 @@ PyJWT
 cryptography
 python-dotenv
 llama-index
+llama-hub
+nltk

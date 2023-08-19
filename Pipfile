@@ -6,6 +6,12 @@ name = "pypi"
 [packages]
 flasks = "*"
 requests = "*"
+pyjwt = "*"
+cryptography = "*"
+python-dotenv = "*"
+llama-index = "*"
+llama-hub = "*"
+nltk = "*"
 
 [dev-packages]
 
