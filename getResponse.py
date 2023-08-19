@@ -1,9 +1,9 @@
-def getResponse(input_string):
-    return "Response: " + input_string
+def getResponse(prompt):
+    return "Response: " + prompt
 
 def main():
-    input_string = "Your question here"
-    result = getResponse(input_string)
+    prompt = "Your question here"
+    result = getResponse(prompt)
     print(result)
 
 if __name__ == "__main__":
