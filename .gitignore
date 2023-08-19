@@ -160,6 +160,8 @@ cython_debug/
 #.idea/
 
 jatase.2023-08-19.private-key.pem
-
+jatasa*
 
 index/
+.DS_Store
+ngrok
