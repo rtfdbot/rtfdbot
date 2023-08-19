@@ -44,20 +44,39 @@ if response.status_code == 201:
 else:
     print("Failed to get installation token:", response.text)
 
+import ipdb; ipdb.set_trace()
 owner = 'skoudoro'
 repo = 'ghbot'
 discussion_number = '3'
 token = installation_token
+graphql_endpoint = "https://api.github.com/graphql"
 
-url = f'https://api.github.com/repos/{owner}/{repo}/discussions'
+# url = f'https://api.github.com/repos/{owner}/{repo}/discussions'
+
+query = """
+query {
+  repository(owner: "%s", name: "%s") {
+    discussions(first: 100) {
+      edges {
+        node {
+          title
+          url
+        }
+      }
+    }
+  }
+}
+""" % (owner, repo)
+
 
 headers = {
-'Authorization': f'Bearer {token}',
+'Authorization': f'Bearer {installation_token}',
 'Accept': 'application/vnd.github.v3+json'
 }
 
-response = requests.get(url, headers=headers)
-
+# response = requests.get(url, headers=headers)
+response = requests.post(graphql_endpoint, json={"query": query}, headers=headers)
+import ipdb; ipdb.set_trace()
 if response.status_code == 200:
     data = response.json()
     print(data)
