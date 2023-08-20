@@ -63,7 +63,8 @@ def webhook():
                 reply_text = f"Thanks for tagging me! 🤖 {query(body)}"
                 print(reply_text)
                 #import ipdb; ipdb.set_trace()
-                reply_to_comment(discussion['repository_url'] + "/discussions", reply_text)
+                url = "https://api.github.com/graphql"
+                reply_to_comment(url, reply_text)
 
     return "OK", 200
 
@@ -74,17 +75,33 @@ def is_valid_signature(payload, signature):
 def reply_to_comment(discussion_url, reply_text):
     token = create_token()
     headers = {
-        "Authorization": f"Bearer {token}"
-    }
-    data = {
-        "body": reply_text
+        "Authorization": f"Bearer {token}",
+        'Accept': 'application/vnd.github.v3+json'
     }
 
-    response = requests.post(discussion_url + "/comments", json=data, headers=headers)
-    if response.status_code == 201:
-        print("Reply posted successfully")
-    else:
-        print("Failed to post reply:", response.text)
+    mutation = """
+{
+  addDiscussionComment(input: {
+    discussionId: "3",
+    body: "Your reply here",
+    clientMutationId: "13456"
+  }) {
+   # response type:
+   comment{
+    id
+    }
+  }
+}
+
+
+    """
+    print(discussion_url)
+    response = requests.post(discussion_url, json={"query":mutation}, headers=headers)
+    print(response)
+    #if response.status_code == 201:
+    #    print("Reply posted successfully")
+    #else:
+    #   print("Failed to post reply:", response.text)
 
 
 def create_token():
