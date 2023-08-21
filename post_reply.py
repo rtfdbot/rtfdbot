@@ -54,6 +54,9 @@ if response.status_code == 200:
 else:
     print(f"Request failed with status code: {response.status_code}")
 
+
+'''
+
 # create a reply to a discussion
 
 print("create a reply to a discussion")
@@ -81,3 +84,5 @@ if response.status_code == 200:
     print(data)
 else:
     print(f"Request failed with status code: {response.status_code}")
+
+'''
