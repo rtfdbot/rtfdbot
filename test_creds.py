@@ -105,7 +105,7 @@ if response.status_code == 200:
     # import ipdb; ipdb.set_trace()
     # comments =data["data"]["repository"]["discussion"]["comments"]
     discussion_id = data["data"]["repository"]["discussion"]["id"]
-    print("we got some discussion comments")
+    print(f"we got some discussion comments from {discussion_id}")
 
 else:
     print(f"Request failed with status code: {response.status_code}")
